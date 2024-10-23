@@ -15,7 +15,7 @@ class Ok extends Command
             ->setDefinition([]);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $scriptOutput = (new MagicTestManager)->runScripts();
 

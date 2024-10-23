@@ -1,48 +1,49 @@
-import AttributeParser from './../AttributeParser';
-import { isSameArray } from './../Helpers';
+import AttributeParser from "./../AttributeParser";
+import { isSameArray } from "./../Helpers";
 
 export default function keypress(event) {
-    event = event || window.event;
-    console.log(event);
-    let tagName = event.target.tagName.toLowerCase();
-    let charCode = event.keyCode || event.which;
-    let charStr = String.fromCharCode(charCode);
-    let attributes = event.target.attributes;
+  event = event || window.event;
+  console.log(event, 123);
+  let tagName = event.target.tagName.toLowerCase();
+  let charCode = event.keyCode || event.which;
+  let charStr = String.fromCharCode(charCode);
+  let attributes = event.target.attributes;
 
+  // let isLivewire = Array.from(attributes).filter((attribute) => attribute.nodeName.includes('wire:')).length > 0;
 
-    // let isLivewire = Array.from(attributes).filter((attribute) => attribute.nodeName.includes('wire:')).length > 0;
+  const parsedAttributes = AttributeParser(attributes);
 
+  const parent = {
+    tag: event.target.parent?.tagName.toLowerCase() || null,
+  };
 
-    const parsedAttributes = AttributeParser(attributes);
+  let text = (event.target.value + charStr).trim();
 
-    const parent = {
-        tag: event.target.parent?.tagName.toLowerCase() || null
-    };
+  let finalObject = {
+    action: "fill",
+    attributes: parsedAttributes,
+    parent: parent,
+    tag: tagName,
+    meta: {
+      text: text,
+    },
+  };
 
-    let text = (event.target.value + charStr).trim();    
+  const isSame = (firstObject, secondObject) => {
+    return (
+      firstObject.tag == secondObject.tag &&
+      isSameArray(firstObject.attributes, secondObject.attributes)
+    );
+  };
 
-    let finalObject = {
-        action: 'fill',
-        attributes: parsedAttributes,
-        parent: parent,
-        tag: tagName,
-        meta: {
-            text: text
-        }
-    };
+  var testingOutput = JSON.parse(sessionStorage.getItem("testingOutput"));
+  var lastAction = testingOutput[testingOutput.length - 1];
 
-    const isSame = (firstObject, secondObject) => {
-        return firstObject.tag == secondObject.tag && isSameArray(firstObject.attributes, secondObject.attributes);
-    };
+  if (lastAction && isSame(lastAction, finalObject)) {
+    lastAction.meta = finalObject.meta;
+  } else {
+    testingOutput.push(finalObject);
+  }
 
-    var testingOutput = JSON.parse(sessionStorage.getItem("testingOutput"));
-    var lastAction = testingOutput[testingOutput.length - 1];
-
-    if (lastAction && isSame(lastAction, finalObject)) {
-        lastAction.meta = finalObject.meta;
-    } else {
-        testingOutput.push(finalObject);
-    }
-
-    sessionStorage.setItem("testingOutput", JSON.stringify(testingOutput));
+  sessionStorage.setItem("testingOutput", JSON.stringify(testingOutput));
 }

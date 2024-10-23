@@ -35,11 +35,11 @@ class GrammarBuilderVisitor extends NodeVisitorAbstract
     {
         $previousMethod = $this->getPreviousMethodInChain($node);
         $grammar = $this->grammar
-                        ->map(function ($grammar) {
-                            return [$grammar, $grammar->pause()];
-                        })->flatten()->filter();
+            ->map(function ($grammar) {
+                return [$grammar, $grammar->pause()];
+            })->flatten()->filter();
 
-        
+
         // if the last item of a grammar is a pause, it is unnecessary because
         // right now we are in the "magic" call node, so we remove it.
         // That happens unless the second to last grammar is a Livewire field.
@@ -47,16 +47,19 @@ class GrammarBuilderVisitor extends NodeVisitorAbstract
         $secondToLastGrammar = $grammar->count() > 1 ? $grammar[$grammar->count() - 2] : null;
         if (
             $grammar->last() instanceof Pause &&
-            ! $secondToLastGrammar->isLivewire()
+            !$secondToLastGrammar->isLivewire()
         ) {
             $grammar->pop();
         }
 
         // If the previous method was a method
         // that needs a pause, we prepend it.
-        if (in_array($previousMethod->name->__toString(), [
-            'clickLink', 'press',
-        ])) {
+        if (
+            in_array($previousMethod->name->__toString(), [
+                'clickLink',
+                'press',
+            ])
+        ) {
             $grammar->prepend(new Pause(500));
         }
 
@@ -70,14 +73,14 @@ class GrammarBuilderVisitor extends NodeVisitorAbstract
             $node->var = new MethodCall(
                 $previousNode->var,
                 $gram->nameForParser(),
-                $this->buildArguments($gram->arguments())
+                $this->buildArguments($gram->arguments()),
             );
         }
     }
 
     public function buildArguments(array $arguments): array
     {
-        return array_map(fn ($argument) => new Arg($argument), $arguments);
+        return array_map(fn($argument) => new Arg($argument), $arguments);
     }
 
     public function getPreviousMethodInChain(Node $node): Expr
