@@ -36,15 +36,9 @@ class File
 
     public function __construct(string $content, string $method)
     {
-        $this->lexer = new \PhpParser\Lexer\Emulative([
-            'usedAttributes' => [
-                'comments',
-                'startLine', 'endLine',
-                'startTokenPos', 'endTokenPos',
-            ],
-        ]);
+        $this->lexer = new \PhpParser\Lexer\Emulative();
 
-        $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7, $this->lexer);
+        $this->parser = (new ParserFactory)->createForNewestSupportedVersion();
         $this->ast = (array) $this->parser->parse($content)[0];
         $this->initialStatements = $this->ast['stmts'];
         $this->newStatements = $this->getNewStatements();
@@ -81,7 +75,7 @@ class File
         return (new PrettyPrinter)->printFormatPreserving(
             $this->newStatements,
             $this->initialStatements,
-            $this->lexer->getTokens()
+            $this->parser->getTokens(),
         );
     }
 
@@ -102,7 +96,7 @@ class File
     {
         return (new NodeFinder)->findFirst(
             $this->newStatements,
-            fn (Node $node) => $node instanceof ClassMethod && $node->name->__toString() === $method
+            fn(Node $node) => $node instanceof ClassMethod && $node->name->__toString() === $method
         );
     }
 
@@ -118,10 +112,10 @@ class File
     {
         return (new NodeFinder)->findFirst($classMethod->stmts, function (Node $node) {
             return $node instanceof MethodCall &&
-            (new NodeFinder)->find(
-                $node->args,
-                fn (Node $node) => $node instanceof Identifier && $node->name === 'magic'
-            );
+                (new NodeFinder)->find(
+                    $node->args,
+                    fn(Node $node) => $node instanceof Identifier && $node->name === 'magic'
+                );
         });
     }
 
@@ -135,14 +129,14 @@ class File
     protected function getClosure(string $method): ?Closure
     {
         $classMethod = $this->getClassMethod($method);
-        throw_if(! $classMethod, new InvalidFileException("Could not find method {$method} on file."));
+        throw_if(!$classMethod, new InvalidFileException("Could not find method {$method} on file."));
 
         $methodCall = $this->getMethodCall($classMethod);
-        throw_if(! $methodCall, new InvalidFileException("Could not find the browse call on file."));
-        
-        $closure = (new NodeFinder)->findFirst($methodCall->args, fn (Node $node) => $node->value instanceof Closure);
-        throw_if(! $closure, new InvalidFileException("Could not find the closure on file."));
+        throw_if(!$methodCall, new InvalidFileException("Could not find the browse call on file."));
 
-        return $closure->value;
+        $closure = (new NodeFinder)->findFirst($methodCall->args, fn(Node $node) => $node instanceof Closure);
+        throw_if(!$closure, new InvalidFileException("Could not find the closure on file."));
+
+        return $closure;
     }
 }
