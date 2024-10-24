@@ -37,7 +37,7 @@ class GrammarBuilderVisitor extends NodeVisitorAbstract
         $grammar = $this->grammar
             ->map(function ($grammar) {
                 return [$grammar, $grammar->pause()];
-            })->flatten()->filter();
+            })->flatten()->filter()->values();
 
 
         // if the last item of a grammar is a pause, it is unnecessary because
