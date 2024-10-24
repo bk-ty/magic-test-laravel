@@ -37,6 +37,8 @@ On your Laravel Dusk tests, simply add `magic()` at the end of your method chain
     }
 ```    
 
+`php artisan dusk --browse`
+
 To run Magic Test, you must simply run the command `php artisan magic`. Behind the scenes, it is the same as running `php artisan dusk`, but it will maintain the browser window open.  
 
 This will leave you with two or three windows:  
