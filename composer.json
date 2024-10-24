@@ -1,16 +1,21 @@
 {
-    "name": "magic-test/magic-test-laravel",
-    "description": "Use Magic Test with Laravel",
+    "name": "bk-ty/magic-test-laravel",
+    "description": "Use Magic Test with Laravel Dusk",
     "keywords": [
         "mateusjatenee",
         "magic-test-laravel"
     ],
-    "homepage": "https://github.com/magic-test/magic-test-laravel",
+    "homepage": "https://github.com/bk-ty/magic-test-laravel",
     "license": "MIT",
     "authors": [
         {
             "name": "Mateus Guimarães",
             "email": "mateus.jatene@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Brandon Kiefer",
+            "email": "brandon.kiefer@tylertech.com",
             "role": "Developer"
         }
     ],
