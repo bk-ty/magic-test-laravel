@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Laravel\Dusk\Browser;
+use MagicTest\MagicTest\Commands\DuskServeCommand;
 use MagicTest\MagicTest\Commands\MagicTestCommand;
 use MagicTest\MagicTest\Middleware\MagicTestMiddleware;
 use Spatie\LaravelPackageTools\Package;
@@ -17,18 +18,23 @@ class MagicTestServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('magic-test-laravel')
-            ->hasCommand(MagicTestCommand::class);
+            ->hasCommands([
+                MagicTestCommand::class,
+                DuskServeCommand::class,
+            ]);
+
+        $this->publishes([$this->package->basePath('/../workflows/dusk.yaml') => base_path('.github/workflows/dusk.yml')], 'magic-dusk');
     }
 
     public function boot()
     {
         parent::boot();
 
-        $this->app->singleton('magic-test-laravel', fn ($app) => new MagicTest);
+        $this->app->singleton('magic-test-laravel', fn($app) => new MagicTest);
 
         $this->app['router']->pushMiddlewareToGroup('web', MagicTestMiddleware::class);
 
-        Browser::macro('magic', fn () => MagicTestManager::run($this));
+        Browser::macro('magic', fn() => MagicTestManager::run($this));
         Browser::macro('clickElement', function ($selector, $value) {
             foreach ($this->resolver->all($selector) as $element) {
                 if (Str::contains($element->getText(), $value)) {
@@ -39,7 +45,7 @@ class MagicTestServiceProvider extends PackageServiceProvider
             }
 
             throw new InvalidArgumentException(
-                "Unable to locate element [${selector}] with content [{$value}]."
+                "Unable to locate element [$selector] with content [{$value}].",
             );
         });
 

@@ -9,8 +9,8 @@ Magic Test allows you to write browser tests by simply clicking around on the ap
 It inverts the test-writing experience and avoids all the back and forth between tests, your terminal and your template files. [See it in action here.](https://twitter.com/mateusjatenee/status/1368905554790334464)  
 The easiest way to explain Magic Test is through a video. [Check it out here](https://twitter.com/mateusjatenee/status/1368905554790334464).
 
-Magic Test was originally created by [Andrew Culver](http://twitter.com/andrewculver) and [Adam Pallozi](https://twitter.com/adampallozzi) for Ruby on Rails.   
-Laravel Magic Test was created by [Mateus Guimarães](https://twitter.com/mateusjatenee).  
+Magic Test was originally created by [Andrew Culver](http://twitter.com/andrewculver) and [Adam Pallozi](https://twitter.com/adampallozzi) for Ruby on Rails.  
+Laravel Magic Test was created by [Mateus Guimarães](https://twitter.com/mateusjatenee).
 
 > Magic Test is still in early development, and that includes the documentation. Any questions you have that aren't already address in the documentation should be opened as issues so they can be appropriately addressed in the documentation.
 
@@ -19,11 +19,20 @@ Laravel Magic Test was created by [Mateus Guimarães](https://twitter.com/mateus
 You can install the package via composer:
 
 ```bash
-composer require bk-ty/magic-test-laravel --dev
-``` 
+composer require magic-test/magic-test-laravel --dev
+```
 
-## Usage   
-On your Laravel Dusk tests, simply add `magic()` at the end of your method chain. For example:  
+### Github Action
+
+To publish the GitHub Action workflow to your project, run:
+
+```bash
+php artisan vendor:publish --tag=magic-dusk
+```
+
+## Usage
+
+On your Laravel Dusk tests, simply add `magic()` at the end of your method chain. For example:
 
 ```php
     public function testBasicExample()
@@ -33,36 +42,42 @@ On your Laravel Dusk tests, simply add `magic()` at the end of your method chain
                     ->magic();
         });
     }
-```    
+```
 
-`php artisan dusk --browse`
+### Running Tests
 
-To run Magic Test, you must simply run the command `php artisan magic`. Behind the scenes, it is the same as running `php artisan dusk`, but it will maintain the browser window open.  
+```bash
+php artisan dusk:serve
+```
 
-This will leave you with two or three windows:  
-- The browser
-- An interactive Shell
-- Your text editor if you had it open    
+This will start a `artisan serve` process in the background to execute your tests.
 
-For the Magic Experience™️, we suggest you organize the three windows to fit your screen. That way, you can see tests being generated in real-time.
+## Recording Actions
 
-## Recording Actions  
-Once the browser is open, Magic Test will already be capturing all of your actions. You can click around, fill inputs, checkboxes, selects and radios just like you would do manually testing an application.   
+```bash
+php artisan dusk:serve --browse
+```
 
-## Generating Assertions  
-Additionally, you can generate text assertions by selecting a given text and then pressing <kbd>Control</kbd><kbd>Shift</kbd> + <kbd>A</kbd>. You'll see a dialog box confirming the assertion has been recorded.  
+Behind the scenes, it is the same as running `php artisan dusk`, but it will maintain the browser window open. Within this browser, you can start configuring your tests using the `magic()` helper method.
 
-## Saving the new actions to the test file   
+Once the browser is open, Magic Test will already be capturing all of your actions. You can click around, fill inputs, checkboxes, selects and radios just like you would do manually testing an application.
+
+## Generating Assertions
+
+Additionally, you can generate text assertions by selecting a given text and then pressing <kbd>Control</kbd><kbd>Shift</kbd> + <kbd>A</kbd>. You'll see a dialog box confirming the assertion has been recorded.
+
+## Saving the new actions to the test file
+
 To save the actions that were recorded, simply go to the Shell and type `ok`. You are free to close it and come back to your Magic Sessiona any time, or just keep recording more actions.  
-If you're satisfied with your test, you can type `finish` on the Shell and it'll remove the `magic()` call from your test, leaving you with a clean, working test.  
+If you're satisfied with your test, you can type `finish` on the Shell and it'll remove the `magic()` call from your test, leaving you with a clean, working test.
 
 See how it works [on this video](https://twitter.com/mateusjatenee/status/1368905554790334464)
 
 Magic Test is still in it's early days, so you might find that the output is not exactly what you wanted. In that case, [feel free to submit an issue](https://github.com/magic-test/magic-test-laravel/issues/new) and we'll try to improve it ASAP.
 
-## Known issues   
+## Known issues
 
-Magic Test does not work well with Inertia.js assertions. If you're using Inertia in an integration test, please disable Magic Test by add the following code to your `setUp` method:   
+Magic Test does not work well with Inertia.js assertions. If you're using Inertia in an integration test, please disable Magic Test by add the following code to your `setUp` method:
 
 ```php
 <?php
@@ -74,7 +89,7 @@ class MyTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         MagicTest::disable();
     }
 }
@@ -94,10 +109,10 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Mateus Guimarães](https://twitter.com/mateusjatenee)
-- [Andrew Culver](http://twitter.com/andrewculver)
-- [Adam Pallozzi](https://twitter.com/adampallozzi)
-- [All Contributors](../../contributors)
+-   [Mateus Guimarães](https://twitter.com/mateusjatenee)
+-   [Andrew Culver](http://twitter.com/andrewculver)
+-   [Adam Pallozzi](https://twitter.com/adampallozzi)
+-   [All Contributors](../../contributors)
 
 ## License
 

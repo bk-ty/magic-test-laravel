@@ -85,9 +85,6 @@ class GrammarBuilderVisitor extends NodeVisitorAbstract
 
     public function getPreviousMethodInChain(Node $node): Expr
     {
-        $parentExpression = $node->getAttribute('parent')->expr;
-
-        // now we return the first var, which *should* be the previous method.
-        return $parentExpression->var;
+        return $node->getAttribute('parent')->var;
     }
 }
