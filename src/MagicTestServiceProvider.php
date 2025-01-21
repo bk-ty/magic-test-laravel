@@ -22,8 +22,6 @@ class MagicTestServiceProvider extends PackageServiceProvider
                 MagicTestCommand::class,
                 DuskServeCommand::class,
             ]);
-
-        $this->publishes([$this->package->basePath('/../workflows/dusk.yaml') => base_path('.github/workflows/dusk.yml')], 'magic-dusk');
     }
 
     public function boot()

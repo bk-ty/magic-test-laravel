@@ -22,14 +22,6 @@ You can install the package via composer:
 composer require bk-ty/magic-test-laravel --dev
 ```
 
-### Github Action
-
-To publish the GitHub Action workflow to your project, run:
-
-```bash
-php artisan vendor:publish --tag=magic-dusk
-```
-
 ## Usage
 
 On your Laravel Dusk tests, simply add `magic()` at the end of your method chain. For example:
