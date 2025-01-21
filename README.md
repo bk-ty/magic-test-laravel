@@ -19,7 +19,7 @@ Laravel Magic Test was created by [Mateus Guimarães](https://twitter.com/mateus
 You can install the package via composer:
 
 ```bash
-composer require magic-test/magic-test-laravel --dev
+composer require bk-ty/magic-test-laravel --dev
 ```
 
 ### Github Action

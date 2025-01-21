@@ -19,19 +19,15 @@ class MagicTestMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! app()->environment(['local', 'testing', 'dusk'])) {
-            return $next($request);
-        }
-
         /** @var \Illuminate\Http\Response $response */
         $response = $next($request);
 
-        if (! $this->responseContainsClosingHtmlTag($response)) {
+        if (!$this->responseContainsClosingHtmlTag($response)) {
             return $response;
         }
 
         return tap($response)->setContent(
-            $this->addMagicTestScriptsToResponseContent($response->getContent())
+            $this->addMagicTestScriptsToResponseContent($response->getContent()),
         );
     }
 
@@ -51,7 +47,7 @@ class MagicTestMiddleware
         return Str::replaceLast(
             '</html>',
             "{$scripts} \n </html>",
-            $responseContent
+            $responseContent,
         );
     }
 }

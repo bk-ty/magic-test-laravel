@@ -58,8 +58,10 @@ class DuskServeCommand extends DuskCommand
         return $this->withDuskEnvironment(function () use ($options) {
 
 
-            $stdEnv = [];
-            $stdEnv['DB_HOST'] = '127.0.0.1';
+            $stdEnv = [
+                'MAGIC_TEST' => true,
+                'DB_HOST' => '127.0.0.1',
+            ];
 
             $port = \Illuminate\Support\Facades\Process::run(
                 "docker container ls --format \"table {{.Ports}}\" -a | grep 3306 | head -n 1 | awk -F '->' '{print $1}' | awk -F ':' '{print $2}'",

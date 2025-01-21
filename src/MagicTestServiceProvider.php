@@ -30,25 +30,28 @@ class MagicTestServiceProvider extends PackageServiceProvider
     {
         parent::boot();
 
-        $this->app->singleton('magic-test-laravel', fn($app) => new MagicTest);
+        if (env('MAGIC_TEST')) {
+            $this->app->instance('MAGIC_TEST', 1);
+            $this->app->singleton('magic-test-laravel', fn($app) => new MagicTest);
 
-        $this->app['router']->pushMiddlewareToGroup('web', MagicTestMiddleware::class);
+            $this->app['router']->pushMiddlewareToGroup('web', MagicTestMiddleware::class);
 
-        Browser::macro('magic', fn() => MagicTestManager::run($this));
-        Browser::macro('clickElement', function ($selector, $value) {
-            foreach ($this->resolver->all($selector) as $element) {
-                if (Str::contains($element->getText(), $value)) {
-                    $element->click();
+            Browser::macro('magic', fn() => MagicTestManager::run($this));
+            Browser::macro('clickElement', function ($selector, $value) {
+                foreach ($this->resolver->all($selector) as $element) {
+                    if (Str::contains($element->getText(), $value)) {
+                        $element->click();
 
-                    return $this;
+                        return $this;
+                    }
                 }
-            }
 
-            throw new InvalidArgumentException(
-                "Unable to locate element [$selector] with content [{$value}].",
-            );
-        });
+                throw new InvalidArgumentException(
+                    "Unable to locate element [$selector] with content [{$value}].",
+                );
+            });
 
-        Blade::directive('magicTestScripts', [MagicTest::class, 'scripts']);
+            Blade::directive('magicTestScripts', [MagicTest::class, 'scripts']);
+        }
     }
 }
